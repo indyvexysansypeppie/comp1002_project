@@ -6,6 +6,7 @@ score = 0
 highest_tile = 0
 
 while True:
+    clear_screen()
     print_board(board)
     print("Score:", score)
     print("Highest Tile:", highest_tile)
