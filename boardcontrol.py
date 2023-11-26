@@ -121,6 +121,10 @@ def move(board, direction):
         move_left(board)
         board[:] = transpose_board(board)
 
+def get_highest_tile(board):
+    highest_tile = max(max(row) for row in board)
+    return highest_tile
+
 # each tile, from left to right, from top to bottom, assigned id of 0 to 15
 # id_to_coord() converts id to the coord of the grid
 # eg id 5 -> grid[1][1]
