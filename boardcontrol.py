@@ -1,4 +1,4 @@
-import os, math, random, keyboard
+import os, math, random, msvcrt
 
 board = []
 score = 0
@@ -112,6 +112,21 @@ def pick_emptytile():
     if empty_cells:
         row, col = random.choice(empty_cells)
         return row, col
+
+#Identify keys pressed
+def get_arrow_key():
+    while True:
+        key = ord(msvcrt.getch())
+        if key == 224:  # Arrow key prefix
+            key = ord(msvcrt.getch())
+            if key == 75:
+                return 'left'
+            elif key == 77:
+                return 'right'
+            elif key == 80:
+                return 'down'
+            elif key == 72:
+                return 'up'
 
 # each tile, from left to right, from top to bottom, assigned id of 0 to 15
 # id_to_coord() converts id to the coord of the grid
