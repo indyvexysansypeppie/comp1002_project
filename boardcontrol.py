@@ -51,8 +51,20 @@ def print_board(a):
 
 # create a tile of either value 2 or 4 on an empty space
 def create_tile():
+<<<<<<< HEAD
     a = pick_emptytile()
     boardState[a[0]][a[1]] = pow(2,random.randint(1,2)) # 2^1=2; 2^2=4
+=======
+    empty_cells = []
+    for i in range(len(board)):
+        for j in range(len(board[i])):
+            if board[i][j] == 0:
+                empty_cells.append((i, j))
+    if empty_cells:
+        row, col = random.choice(empty_cells)
+        board[row][col] = random.choice([2, 4])
+    pass
+>>>>>>> ed56c5f0562194c291e3a3e91f706e9f5e82a8a4
 
 # create an obstacle
 # obstacle values are 2^x-1 to differenciate from tiles which are 2^x
@@ -73,6 +85,7 @@ def pick_emptytile():
 # each tile, from left to right, from top to bottom, assigned id of 0 to 15
 # id_to_coord() converts id to the coord of the grid
 # eg id 5 -> grid[1][1]
+<<<<<<< HEAD
 def id_to_coord(id):
     a = math.floor(id/4)
     b = id % 4
@@ -80,3 +93,7 @@ def id_to_coord(id):
 
 def clear_screen():
     os.system("cls")
+=======
+def id_to_coord():
+    pass
+>>>>>>> ed56c5f0562194c291e3a3e91f706e9f5e82a8a4
