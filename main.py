@@ -11,4 +11,3 @@ while True:
     print("Highest Tile:", highest_tile)
     direction = get_arrow_key()
     move(board, direction)
-    add_new_tile(board)
