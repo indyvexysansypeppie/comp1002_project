@@ -97,6 +97,11 @@ def get_arrow_key():
             elif key == 72:
                 return 'up'
 
+#Transposes tiles
+def transpose_board(board):
+    transposed = [[board[j][i] for j in range(len(board))] for i in range(len(board[0]))]
+    return transposed
+
 #Movement of tiles based on input from get_arrow_key(), does not work 100%
 def move(board, direction):
     if direction == 'left':
