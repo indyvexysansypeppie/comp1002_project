@@ -1,4 +1,4 @@
-import os, math
+import os, math, random
 
 boardState = []
 
@@ -12,6 +12,10 @@ def initialBoard():
     # create 2 tiles to begin
     for i in range(2):
         create_tile()
+    
+    # create 2 obstacles
+    for i in range(2):
+        create_obstacle()
 
     print_board(boardState)
 
@@ -31,6 +35,12 @@ def print_board(a):
     #     print("├───┼───┼───┼───┤")
     # print("└───┴───┴───┴───┘")
 
+    # alt board format:
+    # ┌─────┐
+    # │     │
+    # └─────┘
+    # repeat 16 times
+
     # just bad
     for i in range(4):
         for j in range(4):
@@ -41,14 +51,32 @@ def print_board(a):
 
 # create a tile of either value 2 or 4 on an empty space
 def create_tile():
-    pass
+    a = pick_emptytile()
+    boardState[a[0]][a[1]] = pow(2,random.randint(1,2)) # 2^1=2; 2^2=4
 
 # create an obstacle
+# obstacle values are 2^x-1 to differenciate from tiles which are 2^x
 def create_obstacle():
-    pass
+    a = pick_emptytile()
+    boardState[a[0]][a[1]] = pow(2,random.randint(5,7))-1 # value of 31, 63, 127 for testing purpose
+
+# pick a random empty tile
+def pick_emptytile():
+    while True:
+        a = id_to_coord(random.randint(0,15))
+        if boardState[a[0]][a[1]] != " ": #if space is already occupied
+            continue
+        else:
+            break
+    return a
 
 # each tile, from left to right, from top to bottom, assigned id of 0 to 15
 # id_to_coord() converts id to the coord of the grid
 # eg id 5 -> grid[1][1]
-def id_to_coord():
-    pass
+def id_to_coord(id):
+    a = math.floor(id/4)
+    b = id % 4
+    return [a,b]
+
+def clear_screen():
+    os.system("cls")
