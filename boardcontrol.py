@@ -13,8 +13,7 @@ def initialBoard():
         create_tile()
     
     # create 2 obstacles
-    for i in range(2):
-        create_obstacle()
+    create_obstacle()
 
     print_board(board)
 
