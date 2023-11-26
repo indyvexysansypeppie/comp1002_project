@@ -72,11 +72,11 @@ def pick_emptytile():
         row, col = random.choice(empty_cells)
         return row, col
 
-#Identify keys pressed
+#Identify keys pressed w/ Arrow key prefix
 def get_arrow_key():
     while True:
         key = ord(msvcrt.getch())
-        if key == 224:  # Arrow key prefix
+        if key == 224: 
             key = ord(msvcrt.getch())
             if key == 75:
                 return 'left'
