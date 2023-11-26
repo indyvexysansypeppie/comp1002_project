@@ -87,8 +87,6 @@ def get_arrow_key():
             elif key == 72:
                 return 'up'
 
-#Move
-
 # each tile, from left to right, from top to bottom, assigned id of 0 to 15
 # id_to_coord() converts id to the coord of the grid
 # eg id 5 -> grid[1][1]
