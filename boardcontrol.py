@@ -41,6 +41,14 @@ def print_board(a):
 
 # create a tile of either value 2 or 4 on an empty space
 def create_tile():
+    empty_cells = []
+    for i in range(len(board)):
+        for j in range(len(board[i])):
+            if board[i][j] == 0:
+                empty_cells.append((i, j))
+    if empty_cells:
+        row, col = random.choice(empty_cells)
+        board[row][col] = random.choice([2, 4])
     pass
 
 # create an obstacle
