@@ -3,7 +3,7 @@ board = []
 
 def initialBoard():
     # generate the empty 2d grid
-    for i in range(4):
+    for i in range(2):
         board.append([])
         for j in range(4):
             board[i].append(0)
@@ -40,7 +40,7 @@ def print_board(a):
     # repeat 16 times
 
     # just bad
-    for i in range(4):
+    for i in range(2):
         for j in range(4):
             print(a[i][j],end="\t")
             print("|",end="")
