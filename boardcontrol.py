@@ -1,4 +1,4 @@
-import os, math, random, keyboard
+import os, math, random, msvcrt
 board = []
 
 def initialBoard():
@@ -54,8 +54,6 @@ def create_tile():
     board[row][col] = random.choice([2, 4])
     # board[a[0]][a[1]] = pow(2,random.randint(1,2)) # 2^1=2; 2^2=4
     
-
-
 # create an obstacle
 # obstacle values are 2^x-1 to differenciate from tiles which are 2^x
 def create_obstacle():
@@ -73,6 +71,23 @@ def pick_emptytile():
     if empty_cells:
         row, col = random.choice(empty_cells)
         return row, col
+
+#Identify keys pressed
+def get_arrow_key():
+    while True:
+        key = ord(msvcrt.getch())
+        if key == 224:  # Arrow key prefix
+            key = ord(msvcrt.getch())
+            if key == 75:
+                return 'left'
+            elif key == 77:
+                return 'right'
+            elif key == 80:
+                return 'down'
+            elif key == 72:
+                return 'up'
+
+#Move
 
 # each tile, from left to right, from top to bottom, assigned id of 0 to 15
 # id_to_coord() converts id to the coord of the grid
