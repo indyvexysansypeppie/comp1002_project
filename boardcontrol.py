@@ -72,6 +72,16 @@ def pick_emptytile():
         row, col = random.choice(empty_cells)
         return row, col
 
+#Merging and shifting of tiles
+def move_left(board):
+    for row in board:
+        for i in range(len(row) - 1):
+            if row[i] == row[i + 1]:
+                row[i] *= 2
+                row[i + 1] = 0
+
+        row[:] = [tile for tile in row if tile != 0] + [0]
+
 #Identify keys pressed w/ Arrow key prefix
 def get_arrow_key():
     while True:
@@ -86,6 +96,25 @@ def get_arrow_key():
                 return 'down'
             elif key == 72:
                 return 'up'
+
+#Movement of tiles based on input from get_arrow_key(), does not work 100%
+def move(board, direction):
+    if direction == 'left':
+        move_left(board)
+    elif direction == 'right':
+        board[:] = [row[::-1] for row in board]
+        move_left(board)
+        board[:] = [row[::-1] for row in board]
+    elif direction == 'down':
+        board[:] = transpose_board(board)
+        board[:] = [row[::-1] for row in board]
+        move_left(board)
+        board[:] = [row[::-1] for row in board]
+        board[:] = transpose_board(board)
+    elif direction == 'up':
+        board[:] = transpose_board(board)
+        move_left(board)
+        board[:] = transpose_board(board)
 
 # each tile, from left to right, from top to bottom, assigned id of 0 to 15
 # id_to_coord() converts id to the coord of the grid
