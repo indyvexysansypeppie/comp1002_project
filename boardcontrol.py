@@ -1,5 +1,7 @@
 import os, math, random, keyboard
+
 board = []
+score = 0
 
 def initialBoard():
     # generate the empty 2d grid
@@ -13,9 +15,9 @@ def initialBoard():
         create_tile()
     
     # create 2 obstacles
-    for i in range(2):
-        create_obstacle()
+    create_obstacle(2)
 
+    print(f"Score: {score}",end="\n\n")
     print_board(board)
 
 def print_board(a):
@@ -35,10 +37,15 @@ def print_board(a):
     # print("└───┴───┴───┴───┘")
 
     # alt board format:
-    # ┌─────┐
-    # │     │
-    # └─────┘
-    # repeat 16 times
+    # ┌─────┬─────┬─────┬─────┐
+    # │     │     │     │     │
+    # ├─────┼─────┼─────┼─────┤
+    # │     │     │     │     │
+    # ├─────┼─────┼─────┼─────┤
+    # │     │     │     │     │
+    # ├─────┼─────┼─────┼─────┤
+    # │     │     │     │     │
+    # └─────┴─────┴─────┴─────┘
 
     # just bad
     for i in range(4):
@@ -48,19 +55,51 @@ def print_board(a):
         print()
         print("--------------------")
 
+def turn():
+    dir = input("play input wasd\n")
+
+# coord of tile, direction of sliding
+def slide_tile(row,col,dir):
+    rowDir, colDir = 0,0
+    if dir == "w": # -row
+        rowDir = -1
+    elif dir == "s": # +row
+        rowDir = 1
+    elif dir == "a": # -col
+        colDir = -1
+    elif dir == "d": # +col
+        colDir = 1
+
+    # keeps running as long as tile is sliding on empty tiles
+    while True:
+        targetVal = board[row+rowDir][col+colDir] # value of the target cell
+        if row+rowDir < 0 or col+colDir < 0: # out of bounds
+            break
+        elif targetVal == 0: # target cell is empty
+            # move the tile
+            board[row+rowDir][col+colDir] = board[row][col]
+            board[row][col] = 0
+        elif not(isinstance(math.log2(targetVal),int)): # target cell is obstacle
+            break
+        elif isinstance(math.log2(targetVal),int): # target cell is tile
+            if targetVal != board[row][col]: # target cell is not same value
+                break
+            elif targetVal == board[row][col]: # target cell is same value (merge)
+                pass
+
 # create a tile of either value 2 or 4 on an empty space
 def create_tile():
     row, col = pick_emptytile()
     board[row][col] = random.choice([2, 4])
     # board[a[0]][a[1]] = pow(2,random.randint(1,2)) # 2^1=2; 2^2=4
-    
-
 
 # create an obstacle
 # obstacle values are 2^x-1 to differenciate from tiles which are 2^x
-def create_obstacle():
+def create_obstacle(n=1):
     row, col = pick_emptytile()
-    board[row][col] = pow(2,random.randint(5,7))-1 # value of 31, 63, 127 for testing purpose
+    power = random.sample(range(5,8),n) # no 2 obstacles have unique value
+    for i in power:
+        board[row][col] = pow(2,i)-1 # value of 31, 63, 127 for testing purpose
 
 # pick a random empty tile
 # return empty tile coord
