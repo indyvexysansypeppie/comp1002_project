@@ -6,7 +6,8 @@ import os, math, random, msvcrt
 # row = [0, 127, 4, 4]
 # row = [127, 0, 4, 4]
 # row = [0, 2, 2, 127]
-row = [127, 4, 127, 4]
+# row = [127, 0, 127, 4]
+row = [127, 2, 2, 31]
 
 splitRow = [[]]
 obstacles = {}
@@ -24,7 +25,7 @@ for i in range(4): # check each value in row
 
 # print(splitRow)
 
-output = []
+outputRow = []
 i=0
 while True:
     tileCount = 0 # count no of tiles in that split list
@@ -32,21 +33,26 @@ while True:
         for j in splitRow[i]:
 
             # sliding
-            output.append(j)
+            outputRow.append(j)
             tileCount += 1
             
             # merging
-            if (tileCount >= 2) and (output[-1] == output[-2]): # if there are >2 tiles and both tiles are same value
-                output[-2] *= 2
-                output[-1] = 0
+            # should also increase score & break obstacle here
+            if (tileCount >= 2) and (outputRow[-1] == outputRow[-2]): # if there are >2 tiles and both tiles are same value
+                outputRow[-2] *= 2
+                outputRow[-1] = 0
                 tileCount-1
     i+=1
     if i == len(splitRow):
         break
-    spaces = next(iter(obstacles))
-    for j in range(spaces-tileCount): output.append(0)
-    output.append(obstacles[spaces])
+    # spaces = next(iter(obstacles)) # retrieve index of obstacle
+    # for j in range(spaces-tileCount): outputRow.append(0)
+    # outputRow.append(obstacles[spaces])
 
-for k in range(4-len(output)): output.append(0)
+    obsIDs = list(obstacles.keys()) # get list of the obstacles' indexes
+    for j in range(obsIDs[i-1]-len(outputRow)): outputRow.append(0) # fill in empty spaces between tile & obstacles
+    outputRow.append(obstacles[obsIDs[i-1]])
 
-print(output)
+for k in range(4-len(outputRow)): outputRow.append(0)
+
+print(outputRow)

@@ -12,3 +12,4 @@ while True:
     print("Highest Tile:", highest_tile)
     direction = bcon.get_arrow_key()
     bcon.move(direction)
+    # add tile
