@@ -17,8 +17,8 @@ def initialBoard():
     # create 2 obstacles
     create_obstacle(2)
 
-    print(f"Score: {score}",end="\n\n")
-    print_board()
+    # print(f"Score: {score}",end="\n\n")
+    # print_board()
 
 def print_board():
     # board format:
@@ -65,10 +65,10 @@ def print_board():
     print("└─────┴─────┴─────┴─────┘")
 
 
-def turn():
-    dir = get_arrow_key()
-    move(dir)
-    print_board()
+# def turn():
+    # dir = get_arrow_key()
+    # move(dir)
+    # print_board()
 
 # coord of tile, direction of sliding
 # !!!!!!!!!defunct!!!!!!!!!
@@ -110,9 +110,9 @@ def create_tile():
 # create an obstacle
 # obstacle values are 2^x-1 to differenciate from tiles which are 2^x
 def create_obstacle(n=1):
-    row, col = pick_emptytile()
     power = random.sample(range(5,8),n) # no 2 obstacles have unique value
     for i in power:
+        row, col = pick_emptytile()
         board[row][col] = pow(2,i)-1 # value of 31, 63, 127 for testing purpose
 
 # pick a random empty tile
@@ -190,6 +190,11 @@ def get_arrow_key():
             elif key == 72:
                 return 'up'
 
+#Transposes tiles
+def transpose_board(board):
+    transposed = [[board[j][i] for j in range(len(board))] for i in range(len(board[0]))]
+    return transposed
+
 #Movement of tiles based on input from get_arrow_key(), does not work 100%
 def move(direction):
     if direction == 'left':
@@ -208,6 +213,10 @@ def move(direction):
         board[:] = transpose_board(board)
         move_left()
         board[:] = transpose_board(board)
+
+def get_highest_tile(board):
+    highest_tile = max(max(row) for row in board)
+    return highest_tile
 
 # each tile, from left to right, from top to bottom, assigned id of 0 to 15
 # id_to_coord() converts id to the coord of the grid
