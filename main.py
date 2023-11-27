@@ -6,6 +6,7 @@ score = 0
 highest_tile = 0
 
 while True:
+    bcon.breakObstacle()
     bcon.clear_screen()
     bcon.print_board()
     print("Score:", score)

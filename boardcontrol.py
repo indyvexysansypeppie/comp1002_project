@@ -171,9 +171,12 @@ def move_left():
                         outputRow[-1] = 0
                         tileCount-1
 
+                        # score counting
                         score += outputRow[-2]
                         if(outputRow[-2] >= highest_tile):
                             highest_tile = outputRow[-2]
+                        
+                        
             i+=1
             if i == len(splitRow):
                 break
@@ -250,3 +253,11 @@ def pass_score():
 def pass_highest_tile():
     global highest_tile
     return highest_tile
+
+def breakObstacle():
+    global board ,highest_tile
+    for i in range(4):
+        for j in range(4):
+            if(board[i][j]%2 == 1 and highest_tile > board[i][j]):
+                board[i][j] = 0
+
