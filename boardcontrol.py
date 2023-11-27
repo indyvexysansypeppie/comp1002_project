@@ -168,6 +168,7 @@ def move_left():
                     # should also increase score & break obstacle here
                     if (tileCount >= 2) and (outputRow[-1] == outputRow[-2]): # if there are >2 tiles and both tiles are same value
                         mergedVal = outputRow[-2]*2
+                        outputRow[-2] = mergedVal
                         outputRow.pop(-1)
                         tileCount-1
 
