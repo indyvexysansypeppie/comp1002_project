@@ -18,25 +18,10 @@ def initialBoard():
     create_obstacle(2)
 
     print(f"Score: {score}",end="\n\n")
-    print_board(board)
+    print_board()
 
-def print_board(a):
-    # definitely dont fit 4 digit nums
-    # i=0
-    # print("┌───┬───┬───┬───┐")
-    # while True:
-    #     print("│",end=" ")
-    #     for j in range(4):
-    #         print(a[i][j],end=" ")
-    #         print("│",end=" ")
-    #     print()
-    #     i+=1
-    #     if i > 3:
-    #         break
-    #     print("├───┼───┼───┼───┤")
-    # print("└───┴───┴───┴───┘")
-
-    # alt board format:
+def print_board():
+    # board format:
     # ┌─────┬─────┬─────┬─────┐
     # │     │     │     │     │
     # ├─────┼─────┼─────┼─────┤
@@ -46,46 +31,75 @@ def print_board(a):
     # ├─────┼─────┼─────┼─────┤
     # │     │     │     │     │
     # └─────┴─────┴─────┴─────┘
-
-    # just bad
-    for i in range(4):
+    
+    i=0
+    print("┌─────┬─────┬─────┬─────┐")
+    while True:
+        print("│",end="")
         for j in range(4):
-            print(a[i][j],end="\t")
-            print("|",end="")
+            prefix, suffix = "", ""
+            
+            if board[i][j] == 0:
+                print("     ",end="")
+            
+            elif math.ceil(math.log2(board[i][j])) != math.floor(math.log2(board[i][j])): # obstacle
+                spaceFix = 5-len(str(board[i][j]))-2
+                if spaceFix != 0:
+                    for k in range(math.floor(spaceFix/2)): prefix+=" "
+                    for k in range(math.ceil(spaceFix/2)): suffix+=" "
+                print(f"{prefix}[{board[i][j]}]{suffix}",end="")
+            
+            else: # tiles
+                spaceFix = 5-len(str(board[i][j]))
+                if spaceFix != 0:
+                    for k in range(math.floor(spaceFix/2)): prefix+=" "
+                    for k in range(math.ceil(spaceFix/2)): suffix+=" "
+                print(f"{prefix}{board[i][j]}{suffix}",end="")
+
+            print("│",end="")
         print()
-        print("--------------------")
+        i+=1
+        if i > 3:
+            break
+        print("├─────┼─────┼─────┼─────┤")
+    print("└─────┴─────┴─────┴─────┘")
+
 
 def turn():
-    dir = input("play input wasd\n")
+    dir = get_arrow_key()
+    move(dir)
+    print_board()
 
 # coord of tile, direction of sliding
-def slide_tile(row,col,dir):
-    rowDir, colDir = 0,0
-    if dir == "w": # -row
-        rowDir = -1
-    elif dir == "s": # +row
-        rowDir = 1
-    elif dir == "a": # -col
-        colDir = -1
-    elif dir == "d": # +col
-        colDir = 1
+# !!!!!!!!!defunct!!!!!!!!!
+# def slide_tile(row,col,dir):
+    # rowDir, colDir = 0,0
+    # if dir == "up": # -row
+    #     rowDir = -1
+    # elif dir == "down": # +row
+    #     rowDir = 1
+    # elif dir == "left": # -col
+    #     colDir = -1
+    # elif dir == "right": # +col
+    #     colDir = 1
 
-    # keeps running as long as tile is sliding on empty tiles
-    while True:
-        targetVal = board[row+rowDir][col+colDir] # value of the target cell
-        if row+rowDir < 0 or col+colDir < 0: # out of bounds
-            break
-        elif targetVal == 0: # target cell is empty
-            # move the tile
-            board[row+rowDir][col+colDir] = board[row][col]
-            board[row][col] = 0
-        elif not(isinstance(math.log2(targetVal),int)): # target cell is obstacle
-            break
-        elif isinstance(math.log2(targetVal),int): # target cell is tile
-            if targetVal != board[row][col]: # target cell is not same value
-                break
-            elif targetVal == board[row][col]: # target cell is same value (merge)
-                pass
+    # # keeps running as long as tile is sliding on empty tiles
+    # while True:
+    #     targetVal = board[row+rowDir][col+colDir] # value of the target cell
+    #     if row+rowDir < 0 or col+colDir < 0: # out of bounds
+    #         break
+    #     elif targetVal == 0: # target cell is empty
+    #         # move the tile
+    #         board[row+rowDir][col+colDir] = board[row][col]
+    #         board[row][col] = 0
+    #     elif not(isinstance(math.log2(targetVal),int)): # target cell is obstacle
+    #         break
+    #     elif isinstance(math.log2(targetVal),int): # target cell is tile
+    #         if targetVal != board[row][col]: # target cell is not same value
+    #             break
+    #         elif targetVal == board[row][col]: # target cell is same value (merge)
+    #             board[row+rowDir][col+colDir] = board[row][col]
+    #             break
 
 # create a tile of either value 2 or 4 on an empty space
 def create_tile():
@@ -114,14 +128,52 @@ def pick_emptytile():
         return row, col
 
 #Merging and shifting of tiles
-def move_left(board):
+def move_left():
+    output=[]
+    global board
     for row in board:
-        for i in range(len(row) - 1):
-            if row[i] == row[i + 1]:
-                row[i] *= 2
-                row[i + 1] = 0
+        splitRow = [[]]
+        obstacles = {}
+        n=0
+        for i in range(4): # check each value in row
+            if row[i] == 0: # skip over 0s
+                continue
+            elif math.ceil(math.log2(row[i])) != math.floor(math.log2(row[i])): # check if value != 2^x aka obstacle
+                n+=1
+                obstacles[i]=row[i]
+                # print(obstacles)
+                splitRow.append([])
+                continue
+            splitRow[n].append(row[i])
 
-        row[:] = [tile for tile in row if tile != 0] + [0]
+        # print(splitRow)
+
+        outputRow = []
+        i=0
+        while True:
+            tileCount = 0 # count no of tiles in that split list
+            if splitRow[i] != []: # empty lists are discarded
+                for j in splitRow[i]:
+
+                    # sliding
+                    outputRow.append(j)
+                    tileCount += 1
+                    
+                    # merging
+                    if (tileCount >= 2) and (outputRow[-1] == outputRow[-2]): # if there are >2 tiles and both tiles are same value
+                        outputRow[-2] *= 2
+                        outputRow[-1] = 0
+                        tileCount-1
+            i+=1
+            if i == len(splitRow):
+                break
+            spaces = next(iter(obstacles))
+            for j in range(spaces-tileCount): outputRow.append(0)
+            outputRow.append(obstacles[spaces])
+
+        for k in range(4-len(outputRow)): outputRow.append(0)
+        output.append(outputRow)
+    board=output.copy()
 
 #Identify keys pressed w/ Arrow key prefix
 def get_arrow_key():
@@ -139,22 +191,22 @@ def get_arrow_key():
                 return 'up'
 
 #Movement of tiles based on input from get_arrow_key(), does not work 100%
-def move(board, direction):
+def move(direction):
     if direction == 'left':
-        move_left(board)
+        move_left()
     elif direction == 'right':
         board[:] = [row[::-1] for row in board]
-        move_left(board)
+        move_left()
         board[:] = [row[::-1] for row in board]
     elif direction == 'down':
         board[:] = transpose_board(board)
         board[:] = [row[::-1] for row in board]
-        move_left(board)
+        move_left()
         board[:] = [row[::-1] for row in board]
         board[:] = transpose_board(board)
     elif direction == 'up':
         board[:] = transpose_board(board)
-        move_left(board)
+        move_left()
         board[:] = transpose_board(board)
 
 # each tile, from left to right, from top to bottom, assigned id of 0 to 15
