@@ -167,14 +167,14 @@ def move_left():
                     # merging
                     # should also increase score & break obstacle here
                     if (tileCount >= 2) and (outputRow[-1] == outputRow[-2]): # if there are >2 tiles and both tiles are same value
-                        outputRow[-2] *= 2
-                        outputRow[-1] = 0
+                        mergedVal = outputRow[-2]*2
+                        outputRow.pop(-1)
                         tileCount-1
 
                         # score counting
-                        score += outputRow[-2]
-                        if(outputRow[-2] >= highest_tile):
-                            highest_tile = outputRow[-2]
+                        score += mergedVal
+                        if(mergedVal >= highest_tile):
+                            highest_tile = mergedVal
                         
                         
             i+=1
