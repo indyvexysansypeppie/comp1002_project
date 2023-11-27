@@ -2,6 +2,7 @@ import os, math, random, msvcrt
 
 board = []
 score = 0
+obstacles = [] # 2dlist of coords
 
 def initialBoard():
     # generate the empty 2d grid
@@ -118,6 +119,7 @@ def create_obstacle(n=1):
     for i in power:
         row, col = pick_emptytile()
         board[row][col] = pow(2,i)-1 # value of 31, 63, 127 for testing purpose
+        obstacles.append([row, col])
 
 # pick a random empty tile
 # return empty tile coord
@@ -135,17 +137,18 @@ def pick_emptytile():
 def move_left():
     output=[]
     global board
+    rowCount = 0 # index of row being processed
     for row in board:
         splitRow = [[]]
-        obstacles = {}
+        rowObs = {}
         n=0
         for i in range(4): # check each cell in row
             if row[i] == 0: # skip over 0s
                 continue
             elif math.ceil(math.log2(row[i])) != math.floor(math.log2(row[i])): # check if value != 2^x aka obstacle
                 n+=1
-                obstacles[i]=row[i]
-                # print(obstacles)
+                rowObs[i]=row[i]
+                # print(rowObs)
                 splitRow.append([])
                 continue
             splitRow[n].append(row[i])
@@ -166,24 +169,43 @@ def move_left():
                     # merging
                     # should also increase score & break obstacle here
                     if (tileCount >= 2) and (outputRow[-1] == outputRow[-2]): # if there are >2 tiles and both tiles are same value
-                        outputRow[-2] *= 2
-                        outputRow[-1] = 0
+                        mergedVal = outputRow[-2]*2
+                        outputRow[-2] = mergedVal
+                        outputRow.pop(-1)
                         tileCount-1
 
-                        score += outputRow[-2]
+                        # break obstacle
+                        if mergedVal >= 31: # all obstacles are >31 for now
+                            for obsCoord in obstacles:
+                                if mergedVal > board[obsCoord[0]][obsCoord[1]]: # eg 32 > 31
+                                    # set the board value
+                                    board[obsCoord[0]][obsCoord[1]] = 0
+
+                                    # delete from obstacles
+                                    obstacles.remove([obsCoord[0],obsCoord[1]])
+
+                                    # delete from rowObs if exists
+                                    if rowCount == obsCoord[0]:
+                                        rowObs.pop(obsCoord[1])
+
+                        # score
+                        global score
+                        score += mergedVal
             i+=1
             if i == len(splitRow):
                 break
-            # spaces = next(iter(obstacles)) # retrieve index of obstacle
+            # spaces = next(iter(rowObs)) # retrieve index of obstacle
             # for j in range(spaces-tileCount): outputRow.append(0)
-            # outputRow.append(obstacles[spaces])
+            # outputRow.append(rowObs[spaces])
 
-            obsIDs = list(obstacles.keys()) # get list of the obstacles' indexes
+            obsIDs = list(rowObs.keys()) # get list of the obstacles' indexes
             for j in range(obsIDs[i-1]-len(outputRow)): outputRow.append(0) # fill in empty spaces between tile & obstacles
-            outputRow.append(obstacles[obsIDs[i-1]])
+            outputRow.append(rowObs[obsIDs[i-1]])
 
         for k in range(4-len(outputRow)): outputRow.append(0)
         output.append(outputRow)
+
+        rowCount += 1
     board=output.copy()
 
 #Identify keys pressed w/ Arrow key prefix
